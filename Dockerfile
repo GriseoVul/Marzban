@@ -31,12 +31,12 @@ ENV PATH="/venv/bin:$PATH"
 # moving xray binaries and files
 COPY --from=build /usr/local/bin/xray /usr/local/bin/xray
 COPY --from=build /usr/local/share/xray /usr/local/share/xray
+COPY . /code
 
 # create user
 RUN useradd -m appuser && chown -R appuser:appuser /code /venv
 USER appuser
 
-COPY . /code
 # RUN ./marzban-cli.py completion install --shell bash
 
 CMD ["bash", "-c", "alembic upgrade head; python main.py"]
