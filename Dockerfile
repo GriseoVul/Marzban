@@ -11,22 +11,33 @@ RUN apt-get update \
     && curl -L https://github.com/Gozargah/Marzban-scripts/raw/master/install_latest_xray.sh | bash \
     && rm -rf /var/lib/apt/lists/*
 
+RUN python -m venv /venv
+ENV PATH="/venv/bin:$PATH"
+
 COPY ./requirements.txt /code/
 RUN python3 -m pip install --upgrade pip setuptools \
     && pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 FROM python:$PYTHON_VERSION-slim
 
-ENV PYTHON_LIB_PATH=/usr/local/lib/python${PYTHON_VERSION%.*}/site-packages
+# ENV PYTHON_LIB_PATH=/usr/local/lib/python${PYTHON_VERSION%.*}/site-packages
 WORKDIR /code
 
-RUN rm -rf $PYTHON_LIB_PATH/*
+RUN USERADD -m appuser
+RUN chown -R appuser:appuser /code
 
-COPY --from=build $PYTHON_LIB_PATH $PYTHON_LIB_PATH
+USER appuser
+
+# RUN rm -rf $PYTHON_LIB_PATH/*
+
+COPY --from=build /venv /venv
+# COPY --from=build $PYTHON_LIB_PATH $PYTHON_LIB_PATH
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /usr/local/share/xray /usr/local/share/xray
 
 COPY . /code
+
+ENV PATH="/venv/bin:$PATH"
 
 RUN ln -s /code/marzban-cli.py /usr/bin/marzban-cli \
     && chmod +x /usr/bin/marzban-cli \
