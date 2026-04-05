@@ -17,12 +17,17 @@ RUN python -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 
 # requirements and setuptools
-COPY ./requirements.txt /code/
-RUN python3 -m pip install --upgrade pip setuptools \
-    && pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip setuptools \
+    && pip install --no-cache-dir --upgrade -r requirements.txt
 
-FROM python:$PYTHON_VERSION-slim
+FROM python:$PYTHON_VERSION-slim AS runtime
 WORKDIR /code
+
+# runtime deps
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libpq5 \
+    && rm -rf /var/lib/apt/lists/*
 
 # copying environment from build 
 COPY --from=build /venv /venv
