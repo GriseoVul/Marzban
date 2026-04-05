@@ -23,7 +23,7 @@ FROM python:$PYTHON_VERSION-slim
 # ENV PYTHON_LIB_PATH=/usr/local/lib/python${PYTHON_VERSION%.*}/site-packages
 WORKDIR /code
 
-RUN USERADD -m appuser
+RUN useradd -m appuser
 RUN chown -R appuser:appuser /code
 
 USER appuser
