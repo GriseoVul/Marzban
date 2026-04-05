@@ -39,7 +39,7 @@ COPY --from=build /usr/local/share/xray /usr/local/share/xray
 COPY . /code
 
 # fix for missing pkg_resources
-RUN pip install --upgrade pip setuptools
+RUN pip install --upgrade pip setuptools[core]
 
 # create user
 RUN useradd -m appuser && chown -R appuser:appuser /code /venv
