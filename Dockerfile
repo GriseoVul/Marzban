@@ -39,7 +39,7 @@ COPY --from=build /usr/local/share/xray /usr/local/share/xray
 COPY . /code
 
 # create user
-RUN useradd -m appuser && chown -R appuser:appuser /code /venv
+RUN useradd -u 1000 -m appuser && chown -R appuser:appuser /code /venv
 USER appuser
 
 # RUN ./marzban-cli.py completion install --shell bash
