@@ -18,7 +18,7 @@ ENV PATH="/venv/bin:$PATH"
 
 # requirements and setuptools
 COPY requirements.txt .
-RUN pip install --upgrade pip setuptools==8.1 \
+RUN pip install --upgrade pip setuptools==8.1 zombie-imp\
     && pip install --no-cache-dir --upgrade -r requirements.txt
 
 FROM python:$PYTHON_VERSION-slim AS runtime
