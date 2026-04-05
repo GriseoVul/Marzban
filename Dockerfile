@@ -18,7 +18,7 @@ ENV PATH="/venv/bin:$PATH"
 
 # requirements and setuptools
 COPY requirements.txt .
-RUN pip install --upgrade pip setuptools \
+RUN pip install --upgrade pip setuptools[core] \
     && pip install --no-cache-dir --upgrade -r requirements.txt
 
 FROM python:$PYTHON_VERSION-slim AS runtime
@@ -26,7 +26,7 @@ WORKDIR /code
 
 # runtime deps
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq5 \
+    && apt-get install -y --no-install-recommends libpq5 python3-setuptools\
     && rm -rf /var/lib/apt/lists/*
 
 # copying environment from build 
@@ -37,9 +37,6 @@ ENV PATH="/venv/bin:$PATH"
 COPY --from=build /usr/local/bin/xray /usr/local/bin/xray
 COPY --from=build /usr/local/share/xray /usr/local/share/xray
 COPY . /code
-
-# fix for missing pkg_resources
-RUN pip install --upgrade pip setuptools[core]
 
 # create user
 RUN useradd -m appuser && chown -R appuser:appuser /code /venv
