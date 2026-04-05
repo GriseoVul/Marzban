@@ -33,6 +33,9 @@ RUN apt-get update \
 COPY --from=build /venv /venv
 ENV PATH="/venv/bin:$PATH"
 
+# fix?
+RUN curl https://bootstrap.pypa.io/ez_setup.py | python
+
 # moving xray binaries and files
 COPY --from=build /usr/local/bin/xray /usr/local/bin/xray
 COPY --from=build /usr/local/share/xray /usr/local/share/xray
