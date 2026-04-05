@@ -39,6 +39,6 @@ COPY . /code
 
 ENV PATH="/venv/bin:$PATH"
 
-RUN ./marzban-cli completion install --shell bash
+RUN ./marzban-cli.py completion install --shell bash
 
 CMD ["bash", "-c", "alembic upgrade head; python main.py"]
