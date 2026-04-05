@@ -18,7 +18,7 @@ ENV PATH="/venv/bin:$PATH"
 
 # requirements and setuptools
 COPY requirements.txt .
-RUN pip install --upgrade pip setuptools[core] \
+RUN pip install --upgrade pip setuptools==8.1 \
     && pip install --no-cache-dir --upgrade -r requirements.txt
 
 FROM python:$PYTHON_VERSION-slim AS runtime
@@ -26,15 +26,12 @@ WORKDIR /code
 
 # runtime deps
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq5 python3-setuptools\
+    && apt-get install -y --no-install-recommends libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 # copying environment from build 
 COPY --from=build /venv /venv
 ENV PATH="/venv/bin:$PATH"
-
-# fix?
-RUN curl https://bootstrap.pypa.io/ez_setup.py | python
 
 # moving xray binaries and files
 COPY --from=build /usr/local/bin/xray /usr/local/bin/xray
